@@ -1,13 +1,18 @@
-import React from 'react';
+/* import { React, useState } from 'react'; */
 
 import ToDo from './components/todo/todo.js';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <>
-        <ToDo />
-      </>
-    );
-  }
+
+function App() {
+
+/*   let [ list ] = useState(''); */
+
+  return (
+    <>
+      <ToDo />
+    </>
+  );
 }
+
+
+export default App;

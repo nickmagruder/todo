@@ -1,15 +1,16 @@
 import React from 'react';
 
-function TodoList({list, handleComplete}){
+class TodoList extends React.Component {
 
+  render() {
     return (
       <ul>
-        {list.map(item => (
+        {this.props.list.map(item => (
           <li
             className={`complete-${item.complete.toString()}`}
             key={item._id}
           >
-            <span onClick={() => handleComplete(item._id)}>
+            <span onClick={() => this.props.handleComplete(item._id)}>
               {item.text}
             </span>
           </li>
@@ -17,6 +18,6 @@ function TodoList({list, handleComplete}){
       </ul>
     );
   }
-
+}
 
 export default TodoList;
