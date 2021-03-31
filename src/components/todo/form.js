@@ -1,20 +1,9 @@
 import { React, useState } from 'react';
+import useForm from '../../hooks/useForm';
 
-function TodoForm({addItem}) {
-  const [submission, submit] = useState({});
+function TodoForm(props) {
 
-
-  const handleInputChange = e => {
-    submit({ ...submission, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    e.target.reset();
-    console.log(submission);
-    addItem(submission);
-    submit({});
-  }; 
+  let [formValues, handleInputChange, handleSubmit] = useForm(props.addItem); 
 
   return (
     <>

@@ -57,10 +57,10 @@ body, html {
 
             &.complete-true {
               span {
-                background: pink;
+                background: seagreen;
                 text-decoration:line-through;
                 &:hover {
-                   background: seagreen;
+                   background: pink;
                 }
               }
             }
@@ -69,7 +69,7 @@ body, html {
                 background: #e0e0e0;
                 cursor:pointer;
                 &:hover {
-                    background: pink;
+                    background: seagreen;
                 }
             }
              span, input {

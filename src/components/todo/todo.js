@@ -1,68 +1,108 @@
 import { React, useState, useEffect } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
+import axios from 'axios';
+/* import { v4 as uuidv4 } from 'uuid'; */
 
 import './todo.scss';
+
+
+const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
 
 function ToDo() {
   const [list, setList] = useState([]);
 
-  const addItem = (item) => {
 
-    item._id = Math.random();
-    item.complete = false;
-    setList([...list, item]);
-
-  };
-  
-  const toggleComplete = id => {
-    
-    let item = list.filter(i => i._id === id)[0] || {};
-
-    if (item._id) {
-      item.complete = !item.complete;
-      setList(list.map(listItem => listItem._id === item._id ? item : listItem));
-
+  const addItem = async (item) => {
+    try {
+      let request = await axios({
+        method: 'post',
+        url: todoAPI,
+        data: item 
+      })
+      getItem();
+      return request;
     }
+    catch (e) {
+      console.warn(e.message);
+    }
+  }
+
+
+
+  const getItem = async () => {
+    try {
+      let request = await axios({
+        method: 'get',
+        url: todoAPI
+      })
+      let todos = request.data.results;
+      setList(todos);
+    }
+    catch (e) {
+      console.warn(e.message);
+    }
+  }
+
+
+  const toggleComplete = async (id) => {
+    let newValue = list.filter((list) => list._id === id)[0];
+
+    if (newValue._id) {
+      let request = await axios({
+        method: 'put',
+        url: `${todoAPI}/${id}`,
+        data: { complete: true }
+      })
+      getItem();
+      return request;
+    };
   };
+
+  const deleteItem = async (id) => {
+    try {
+      let request = await axios({
+        method: 'delete',
+        url: `${todoAPI}/${id}`,
+      })
+      getItem();
+      return request;
+    }
+    catch (e) {
+      console.warn(e.message);
+    }
+  }
 
   useEffect(() => {
-
-    setList([
-      { _id: 1, complete: false, text: 'Clean the Kitchen', difficulty: 3, assignee: 'Person A'},
-      { _id: 2, complete: false, text: 'Do the Laundry', difficulty: 2, assignee: 'Person A'},
-      { _id: 3, complete: false, text: 'Walk the Dog', difficulty: 4, assignee: 'Person B'},
-      { _id: 4, complete: true, text: 'Do Homework', difficulty: 3, assignee: 'Person C'},
-      { _id: 5, complete: false, text: 'Take a Nap', difficulty: 1, assignee: 'Person B'},
-    ]);
-
+    getItem();
   }, []);
 
 
-    return (
-      <>
-        <header>
-          <h2>
-          There are {list.filter(item => !item.complete).length} Items To Complete
+  return (
+    <>
+      <header>
+        <h2>
+          To do List Manager, there are {list.filter(item => !item.complete).length} Items To Complete
           </h2>
-        </header>
+      </header>
 
-        <section className="todo">
+      <section className="todo">
 
-          <div>
-            <TodoForm handleSubmit={addItem} />
-          </div>
+        <div>
+          <TodoForm addItem={addItem} />
+        </div>
 
-          <div>
-            <TodoList
-              list={list}
-              handleComplete={toggleComplete}
-            />
-          </div>
-        </section>
-      </>
-    );
-  }
+        <div>
+          <TodoList
+            list={list}
+            handleComplete={toggleComplete}
+            handleDelete={deleteItem}
+          />
+        </div>
+      </section>
+    </>
+  );
+}
 
 
 export default ToDo;
