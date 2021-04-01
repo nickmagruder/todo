@@ -1,19 +1,54 @@
 import { React, useState, useEffect } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
+import Paginate from './paginate.js';
 import axios from 'axios';
-/* import { v4 as uuidv4 } from 'uuid'; */
+import useAjax from '../../useAjax.js';
 
 import './todo.scss';
-
 
 const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
 
 function ToDo() {
+  const [request, response] = useAjax();
   const [list, setList] = useState([]);
+  const [data, setData] = useState();
 
 
-  const addItem = async (item) => {
+  useEffect(() => {
+    request({ url: 'https://api-js401.herokuapp.com/api/v1/todo' });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [request]); 
+
+  useEffect(() => {
+    setData(response);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response]);
+
+  const addItem = (item) => {
+    let options = {
+      url: todoAPI,
+      method: 'post',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json' },
+      data: item
+    }
+
+    request(options);
+  }
+
+/*   const getItem = (item) => {
+    let options = {
+      url: todoAPI,
+      method: 'get',
+      mode: 'cors',
+    }
+    request(options);
+  }
+ */
+
+
+/*   const addItem = async (item) => {
     try {
       let request = await axios({
         method: 'post',
@@ -26,11 +61,11 @@ function ToDo() {
     catch (e) {
       console.warn(e.message);
     }
-  }
+  } */
 
 
 
-  const getItem = async () => {
+   const getItem = async () => {
     try {
       let request = await axios({
         method: 'get',
@@ -42,7 +77,7 @@ function ToDo() {
     catch (e) {
       console.warn(e.message);
     }
-  }
+  } 
 
 
   const toggleComplete = async (id) => {
@@ -73,15 +108,17 @@ function ToDo() {
     }
   }
 
-  useEffect(() => {
+   useEffect(() => {
     getItem();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getItem]);
 
 
   return (
     <>
       <header>
         <h2>
+          {console.log(list, 'LISTTTTTTTTTTTTTTTTTTTTTTTTTT')}
           To do List Manager, there are {list.filter(item => !item.complete).length} Items To Complete
           </h2>
       </header>
@@ -90,7 +127,9 @@ function ToDo() {
 
         <div>
           <TodoForm addItem={addItem} />
+          <Paginate />
         </div>
+
 
         <div>
           <TodoList

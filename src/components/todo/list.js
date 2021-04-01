@@ -14,6 +14,7 @@ function TodoList({ list, handleComplete, handleDelete }) {
 
   return (
     <>
+      {console.log(list, 'LIST')}
       {list.map((item) => (
         <Toast key={item._id} onClose={() => handleDelete(item._id)}>
           <Toast.Header>
@@ -41,22 +42,3 @@ function TodoList({ list, handleComplete, handleDelete }) {
 
 export default TodoList;
 
-{/*  return (
-      <ul>
-        {list.map(item => (
-          <li
-            className={`complete-${item.complete.toString()}`}
-            key={item._id}
-          >
-            <span onClick={() => handleComplete(item._id)}>
-              <p>{item.assignee}</p>
-              <p>{item.text}</p>
-              <p>Difficulty: {item.difficulty}</p>
-              <button type="button">X</button>
-              <toast key=(item._id)
-            </span>
-          </li>
-        ))}
-      </ul>
-    );
-  }  */}
