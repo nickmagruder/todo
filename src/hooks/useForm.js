@@ -7,19 +7,19 @@ const useForm = callback => {
   const handleInputChange = (e) => {
     let { name, value } = e.target;
     setValue({ ...values, [name]: value });
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     e.target.reset();
     callback(values);
-  }
+  };
 
   return [
     values,
     handleInputChange,
-    handleSubmit
-  ]
-}
+    handleSubmit,
+  ];
+};
 
 export default useForm;

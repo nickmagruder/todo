@@ -1,29 +1,36 @@
-import { React, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
-import Paginate from './paginate.js';
+/* import Paginate from './paginate.js'; */
 import axios from 'axios';
-import useAjax from '../../useAjax.js';
+import useAjax from '../../hooks/useAjax.js';
+import AuthProvider from '../context/AuthProvider';
+import Login from '../auth/Login';
+import Auth from '../auth/Auth';
+import Header from '../../components/header/header';
 
 import './todo.scss';
 
 const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
 
-function ToDo() {
+export default function ToDo() {
   const [request, response] = useAjax();
+  const [data, setData] = useState([]);
   const [list, setList] = useState([]);
-  const [data, setData] = useState();
 
 
-  useEffect(() => {
-    request({ url: 'https://api-js401.herokuapp.com/api/v1/todo' });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [request]); 
+  /*   useEffect(() => {
+      console.log('response updated', response);
+      response.results && setData(response.results);
+      // setData(response.results);
+    }, [response]); */
+
 
   useEffect(() => {
     setData(response);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
+
+
 
   const addItem = (item) => {
     let options = {
@@ -31,53 +38,38 @@ function ToDo() {
       method: 'post',
       mode: 'cors',
       headers: { 'Content-Type': 'application/json' },
-      data: item
-    }
-
+      data: item,
+    };
     request(options);
-  }
+  };
 
-/*   const getItem = (item) => {
-    let options = {
-      url: todoAPI,
-      method: 'get',
+
+
+  const deleteItem = id => {
+    const url = `${todoAPI}/${id}`;
+    const options = {
+      url: url,
+      method: 'delete',
       mode: 'cors',
-    }
+      headers: { 'Content-Type': 'application/json' },
+    };
     request(options);
-  }
- */
+  };
 
-
-/*   const addItem = async (item) => {
-    try {
-      let request = await axios({
-        method: 'post',
-        url: todoAPI,
-        data: item 
-      })
-      getItem();
-      return request;
-    }
-    catch (e) {
-      console.warn(e.message);
-    }
-  } */
-
-
-
-   const getItem = async () => {
+  const getItems = async () => {
     try {
       let request = await axios({
         method: 'get',
-        url: todoAPI
-      })
+        url: todoAPI,
+      });
       let todos = request.data.results;
       setList(todos);
     }
     catch (e) {
       console.warn(e.message);
     }
-  } 
+  };
+
 
 
   const toggleComplete = async (id) => {
@@ -87,61 +79,55 @@ function ToDo() {
       let request = await axios({
         method: 'put',
         url: `${todoAPI}/${id}`,
-        data: { complete: true }
-      })
-      getItem();
+        data: { complete: true },
+      });
+      getItems();
       return request;
-    };
+    }
   };
 
-  const deleteItem = async (id) => {
-    try {
-      let request = await axios({
-        method: 'delete',
-        url: `${todoAPI}/${id}`,
-      })
-      getItem();
-      return request;
-    }
-    catch (e) {
-      console.warn(e.message);
-    }
-  }
 
-   useEffect(() => {
-    getItem();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getItem]);
+  /*   useEffect(() => { getItems(); }, []); */
+
+  useEffect(() => {
+    getItems();
+  }, [toggleComplete, deleteItem]);
 
 
   return (
     <>
-      <header>
-        <h2>
-          {console.log(list, 'LISTTTTTTTTTTTTTTTTTTTTTTTTTT')}
-          To do List Manager, there are {list.filter(item => !item.complete).length} Items To Complete
-          </h2>
-      </header>
+      <AuthProvider>
+        <Header />
+        <Auth capability="read">
+          <p>You are authorized!!</p>
 
-      <section className="todo">
+          <div>
+            <h2>
+              To do List Manager, there are {list.filter(item => !item.complete).length} Items To Complete
+            </h2>
+          </div>
 
-        <div>
-          <TodoForm addItem={addItem} />
-          <Paginate />
-        </div>
+          <section className="todo">
+
+            <div>
+              <TodoForm addItem={addItem} />
+
+            </div>
 
 
-        <div>
-          <TodoList
-            list={list}
-            handleComplete={toggleComplete}
-            handleDelete={deleteItem}
-          />
-        </div>
-      </section>
+            <div>
+              <TodoList
+                list={list}
+                handleComplete={toggleComplete}
+                handleDelete={deleteItem}
+              />
+            </div>
+          </section>
+        </Auth>
+      </AuthProvider>
     </>
   );
 }
 
 
-export default ToDo;
+/* export default ToDo; */
