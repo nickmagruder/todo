@@ -3,21 +3,19 @@ import axios from 'axios';
 
 const useAjax = () => {
 
-  const [options, request] = useState({});
-  const [response, setResponse] = useState({});
+  const [options, request] = useState([]);
+  const [response, setResponse] = useState([]);
 
   useEffect(() => {
     async function ajax() {
       if (!options.url) return;
-      let res = await axios(options);
+      const res = await axios(options);
       setResponse(res.data);
     }
     ajax();
-  }, [options])
+  }, [options]);
 
-  // request  is our setter for updation request details
-  // response is our getterfor the axios results 
   return [request, response];
-}
+};
 
 export default useAjax;

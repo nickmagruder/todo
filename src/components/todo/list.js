@@ -7,7 +7,7 @@ function TodoList({ list, handleComplete, handleDelete }) {
 
   const styles = {
     pill: {
-      cursor: "pointer",
+      cursor: 'pointer',
     },
   };
 
@@ -21,12 +21,12 @@ function TodoList({ list, handleComplete, handleDelete }) {
             <Badge
               pill
               style={styles.pill}
-              variant={item.complete ? "danger" : "success"}
+              variant={item.complete ? 'danger' : 'success'}
               onClick={() => handleComplete(item._id)}
             >
-              {!item.complete ? "Pending" : "Complete"}
+              {!item.complete ? 'Pending' : 'Complete'}
             </Badge>
-            <strong className="mr-auto">{item.assignee}</strong>
+            <strong className='mr-auto'>{item.assignee}</strong>
           </Toast.Header>
           <Toast.Body>
             {item.text}
@@ -35,7 +35,7 @@ function TodoList({ list, handleComplete, handleDelete }) {
         </Toast>
       ))}
     </>
-  )
+  );
 }
 
 
